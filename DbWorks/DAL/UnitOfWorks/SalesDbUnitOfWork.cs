@@ -48,6 +48,11 @@ namespace DAL.UnitOfWorks
 
         public void Dispose()
         {
+            CustomerRepository.Dispose();
+            ManagerRepository.Dispose();
+            OrderRepository.Dispose();
+            ProductRepository.Dispose();
+
             Dispose(true);
             GC.SuppressFinalize(this);
         }

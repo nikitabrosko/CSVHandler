@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Data.Common;
 using System.Data.Entity;
+using DAL.Abstractions;
 using DbWorks.Contexts;
 
-namespace DAL.SalesDbContextFactory
+namespace DAL.SalesDbContextFactories
 {
     public class SalesDbContextFactory : ISalesDbContextFactory
     {

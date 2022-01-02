@@ -1,7 +1,7 @@
 ﻿using System.Data.Common;
 using System.Data.Entity;
 
-namespace DAL.SalesDbContextFactory
+namespace DAL.Abstractions
 {
     public interface ISalesDbContextFactory
     {
