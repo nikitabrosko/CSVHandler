@@ -5,7 +5,7 @@ using DbWorks.Models;
 
 namespace DbWorks.Contexts
 {
-    public partial class SalesDbContext : DbContext
+    public class SalesDbContext : DbContext
     {
         private readonly DbConnection _connection;
         public DbSet<Customer> Customers { get; set; }
@@ -17,8 +17,8 @@ namespace DbWorks.Contexts
             : base(connection, ownConnection)
         {
             _connection = connection;
-            Database.Delete();
-            Database.Create();
+
+            Database.CreateIfNotExists();
         }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
