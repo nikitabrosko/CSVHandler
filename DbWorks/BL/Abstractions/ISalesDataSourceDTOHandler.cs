@@ -2,7 +2,7 @@
 {
     public interface ISalesDataSourceDTOHandler
     {
-        SalesDataSourceDTORaw SalesDataSourceDTORaw { get; }
-        SalesDataSourceDTO TransformToSalesDataSourceDTO();
+        ISalesDataSourceDTORaw SalesDataSourceDTORaw { get; }
+        ISalesDataSourceDTO TransformToSalesDataSourceDTO();
     }
 }

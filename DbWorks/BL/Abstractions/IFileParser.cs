@@ -4,6 +4,6 @@ namespace BL.Abstractions
 {
     public interface IFileParser : IDisposable
     {
-        SalesDataSourceDTORaw ReadFile();
+        ISalesDataSourceDTORaw ReadFile();
     }
 }

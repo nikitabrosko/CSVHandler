@@ -2,10 +2,9 @@
 using System.IO;
 using System.Linq;
 using BL.Abstractions;
-using BL.DataSourceParsers.FileParsers;
 using BL.DataSourceParsers.FileParsersFactories;
 using BL.FileManagers;
-using BL.SalesDataSourceDTOHandlers;
+using BL.SalesDataSourceDTOs;
 using DAL.Abstractions.UnitOfWorks;
 
 namespace BL.ProcessManagers
@@ -68,7 +67,7 @@ namespace BL.ProcessManagers
             SaveDataAndMoveFiles(args.Name);
         }
 
-        private void SaveDataToDatabase(SalesDataSourceDTO dataToSave)
+        private void SaveDataToDatabase(ISalesDataSourceDTO dataToSave)
         {
             CustomerCheck();
             ManagerCheck();
@@ -122,7 +121,7 @@ namespace BL.ProcessManagers
             }
         }
 
-        private SalesDataSourceDTO ParseFile(string fileName)
+        private ISalesDataSourceDTO ParseFile(string fileName)
         {
             var fileParser = new FileParserFactory().CreateInstance(_sourceDirectoryPath + fileName);
 

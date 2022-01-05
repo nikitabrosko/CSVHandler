@@ -2,18 +2,18 @@
 using BL.Abstractions;
 using DbWorks.Models;
 
-namespace BL.SalesDataSourceDTOHandlers
+namespace BL.SalesDataSourceDTOs
 {
     public class SalesDataSourceDTOHandler : ISalesDataSourceDTOHandler
     {
-        public SalesDataSourceDTORaw SalesDataSourceDTORaw { get; }
+        public ISalesDataSourceDTORaw SalesDataSourceDTORaw { get; }
 
-        public SalesDataSourceDTOHandler(SalesDataSourceDTORaw salesDataSourceDTORaw)
+        public SalesDataSourceDTOHandler(ISalesDataSourceDTORaw salesDataSourceDTORaw)
         {
             SalesDataSourceDTORaw = salesDataSourceDTORaw;
         }
 
-        public SalesDataSourceDTO TransformToSalesDataSourceDTO()
+        public ISalesDataSourceDTO TransformToSalesDataSourceDTO()
         {
             var customer = new Customer
             {

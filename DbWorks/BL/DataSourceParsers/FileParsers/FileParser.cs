@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using BL.Abstractions;
 using BL.DataSourceParsers.FileParsersFactories;
+using BL.SalesDataSourceDTOs;
 
 namespace BL.DataSourceParsers.FileParsers
 {
@@ -17,7 +18,7 @@ namespace BL.DataSourceParsers.FileParsers
             _reader = new StreamReader(path);
         }
 
-        public SalesDataSourceDTORaw ReadFile()
+        public ISalesDataSourceDTORaw ReadFile()
         {
             var fileNameParser = new FileNameParserFactory()
                 .CreateInstance(_filePath.Split("\\").Last());

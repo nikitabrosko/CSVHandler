@@ -1,8 +1,9 @@
-﻿using DbWorks.Models;
+﻿using BL.Abstractions;
+using DbWorks.Models;
 
-namespace BL.Abstractions
+namespace BL.SalesDataSourceDTOs
 {
-    public class SalesDataSourceDTO
+    public class SalesDataSourceDTO : ISalesDataSourceDTO
     {
         public Customer Customer { get; set; }
 
