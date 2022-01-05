@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data.Entity;
 using DAL.Abstractions;
+using DAL.Abstractions.Factories;
 using DAL.Abstractions.UnitOfWorks;
 using DbWorks.Models;
 
@@ -13,8 +14,8 @@ namespace DAL.UnitOfWorks
         private IGenericRepository<Manager> _managerRepository;
         private IGenericRepository<Order> _orderRepository;
         private IGenericRepository<Product> _productRepository;
-        private readonly IRepositoryFactory _repositoryFactory;
-        private bool _isDisposed;
+        private readonly IGenericRepositoryFactory _repositoryFactory;
+        public bool IsDisposed { get; protected set; }
 
         public IGenericRepository<Customer> CustomerRepository =>
             _customerRepository ??= _repositoryFactory.CreateInstance<Customer>(_context);
@@ -28,22 +29,37 @@ namespace DAL.UnitOfWorks
         public IGenericRepository<Product> ProductRepository =>
             _productRepository ??= _repositoryFactory.CreateInstance<Product>(_context);
 
-        public SalesDbUnitOfWork(DbContext context, IRepositoryFactory repositoryFactory)
+        public SalesDbUnitOfWork(DbContext context, IGenericRepositoryFactory repositoryFactory)
         {
+            Verify(context, repositoryFactory);
+
             _context = context;
             _repositoryFactory = repositoryFactory;
         }
 
+        private void Verify(DbContext context, IGenericRepositoryFactory repositoryFactory)
+        {
+            if (context is null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
+
+            if (repositoryFactory is null)
+            {
+                throw new ArgumentNullException(nameof(repositoryFactory));
+            }
+        }
+
         protected virtual void Dispose(bool disposing)
         {
-            if (!_isDisposed)
+            if (!IsDisposed)
             {
                 if (disposing)
                 {
                     _context.Dispose();
                 }
 
-                _isDisposed = true;
+                IsDisposed = true;
             }
         }
 

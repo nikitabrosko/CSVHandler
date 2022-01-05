@@ -8,6 +8,7 @@ namespace DAL.Abstractions
 {
     public interface IGenericRepository<TEntity> : IDisposable where TEntity : class
     {
+        bool IsDisposed { get; }
         DbContext Context { get; }
         IEnumerable<TEntity> Get(Expression<Func<TEntity, bool>> filter = null,
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null);

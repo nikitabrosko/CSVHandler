@@ -9,15 +9,26 @@ namespace DAL.Repositories
 {
     public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEntity : class
     {
-        protected bool IsDisposed = false;
         private readonly DbSet<TEntity> _dbSet;
 
         public DbContext Context { get; }
 
+        public bool IsDisposed { get; protected set; }
+
         public GenericRepository(DbContext dbContext)
         {
+            Verify(dbContext);
+
             Context = dbContext;
             _dbSet = Context.Set<TEntity>();
+        }
+
+        private void Verify(DbContext dbContext)
+        {
+            if (dbContext is null)
+            {
+                throw new ArgumentNullException(nameof(dbContext));
+            }
         }
 
         public IEnumerable<TEntity> Get(Expression<Func<TEntity, bool>> filter = null,
