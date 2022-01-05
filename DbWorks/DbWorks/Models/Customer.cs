@@ -8,11 +8,11 @@ namespace DbWorks.Models
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string FullName { get; private set; }
-        public virtual ICollection<Product> Products { get; set; }
+        public virtual ICollection<Order> Orders { get; set; }
 
         public Customer()
         {
-            Products = new HashSet<Product>();
+            Orders = new HashSet<Order>();
         }
     }
 }
