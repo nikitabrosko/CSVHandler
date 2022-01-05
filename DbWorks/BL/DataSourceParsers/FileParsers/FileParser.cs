@@ -41,7 +41,8 @@ namespace BL.DataSourceParsers.FileParsers
 
         public void Dispose()
         {
-            _reader?.Dispose();
+            _reader.Close();
+            _reader.Dispose();
             GC.SuppressFinalize(this);
         }
     }

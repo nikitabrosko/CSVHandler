@@ -123,13 +123,20 @@ namespace BL.ProcessManagers
 
         private ISalesDataSourceDTO ParseFile(string fileName)
         {
-            var fileParser = new FileParserFactory().CreateInstance(_sourceDirectoryPath + fileName);
+            try
+            {
+                using (var fileParser = new FileParserFactory().CreateInstance(_sourceDirectoryPath + fileName))
+                {
+                    var dataRaw = new SalesDataSourceDTOHandler(fileParser.ReadFile());
 
-            var dataRaw = new SalesDataSourceDTOHandler(fileParser.ReadFile());
-
-            fileParser.Dispose();
-
-            return dataRaw.TransformToSalesDataSourceDTO();
+                    return dataRaw.TransformToSalesDataSourceDTO();
+                }
+            }
+            catch (IOException)
+            {
+                // Try to parse file again
+                return ParseFile(fileName);
+            }
         }
 
         public void Dispose()
