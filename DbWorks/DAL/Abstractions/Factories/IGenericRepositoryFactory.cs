@@ -1,8 +1,8 @@
 ﻿using System.Data.Entity;
 
-namespace DAL.Abstractions
+namespace DAL.Abstractions.Factories
 {
-    public interface IRepositoryFactory
+    public interface IGenericRepositoryFactory
     {
         IGenericRepository<TEntity> CreateInstance<TEntity>(DbContext context) where TEntity : class;
     }
