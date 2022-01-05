@@ -1,19 +1,20 @@
 ﻿using System;
+using System.Data.Entity;
 using DAL.Abstractions;
-using DbWorks.Contexts;
+using DAL.Abstractions.UnitOfWorks;
 using DbWorks.Models;
 
 namespace DAL.UnitOfWorks
 {
-    public class SalesDbUnitOfWork : IUnitOfWork
+    public class SalesDbUnitOfWork : ISalesDbUnitOfWork
     {
-        private readonly SalesDbContext _context;
+        private readonly DbContext _context;
         private IGenericRepository<Customer> _customerRepository;
         private IGenericRepository<Manager> _managerRepository;
         private IGenericRepository<Order> _orderRepository;
         private IGenericRepository<Product> _productRepository;
         private readonly IRepositoryFactory _repositoryFactory;
-        private bool _isDisposed = false;
+        private bool _isDisposed;
 
         public IGenericRepository<Customer> CustomerRepository =>
             _customerRepository ??= _repositoryFactory.CreateInstance<Customer>(_context);
@@ -27,7 +28,7 @@ namespace DAL.UnitOfWorks
         public IGenericRepository<Product> ProductRepository =>
             _productRepository ??= _repositoryFactory.CreateInstance<Product>(_context);
 
-        public SalesDbUnitOfWork(SalesDbContext context, IRepositoryFactory repositoryFactory)
+        public SalesDbUnitOfWork(DbContext context, IRepositoryFactory repositoryFactory)
         {
             _context = context;
             _repositoryFactory = repositoryFactory;
