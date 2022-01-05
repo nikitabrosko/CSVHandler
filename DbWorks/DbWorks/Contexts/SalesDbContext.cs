@@ -19,7 +19,9 @@ namespace DbWorks.Contexts
             : base(connection, ownConnection)
         {
             _connection = connection;
-            
+
+            // Database.Delete();
+
             if (!Database.Exists())
             {
                 Database.Create();
@@ -67,7 +69,7 @@ namespace DbWorks.Contexts
         private void AddTriggersToDatabase()
         {
             var config = new ConfigurationBuilder()
-                .AddJsonFile(@"F:\GitHub\Task4\DbWorks\DbWorks\appTriggersSettings.json")
+                .AddJsonFile(Path.GetFullPath(@"..\\..\\..\\..\\DbWorks\\appTriggersSettings.json"))
                 .Build();
 
             Database.ExecuteSqlCommand(File.ReadAllText(config.GetSection("TriggersFolders:CustomerFullName").Value));

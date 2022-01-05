@@ -1,4 +1,5 @@
 using System.Data.SqlClient;
+using System.IO;
 using DAL.RepositoryFactories;
 using DAL.UnitOfWorks;
 using Microsoft.Extensions.Configuration;
@@ -15,16 +16,16 @@ namespace DebugTests
         public void TestMethod1()
         {
             var config = new ConfigurationBuilder()
-                .AddJsonFile(@"F:\GitHub\Task4\DbWorks\DebugTests\appsettings.json")
+                .AddJsonFile(Path.GetFullPath(@"..\\..\\..\\appsettings.json"))
                 .Build();
 
-            var sourceDirectoryPath = config.GetSection("AppOptions:FolderOptions:Source").Value;
-            var targetDirectoryPath = config.GetSection("AppOptions:FolderOptions:Target").Value;
+            var sourceDirectoryPath = Path.GetFullPath(config.GetSection("AppOptions:FolderOptions:Source").Value);
+            var targetDirectoryPath = Path.GetFullPath(config.GetSection("AppOptions:FolderOptions:Target").Value);
             var filesExtension = config.GetSection("AppOptions:FolderOptions:Extension").Value;
             var connectionString = config.GetSection("AppOptions:ConnectionOptions:Default").Value;
 
             var salesDbContext = new SalesDbContextFactory().CreateInstance(new SqlConnection(connectionString));
-            var salesDbUnitOfWork = new SalesDbUnitOfWork(salesDbContext, new RepositoryFactory());
+            var salesDbUnitOfWork = new SalesDbUnitOfWork(salesDbContext, new GenericRepositoryFactory());
 
             var processManager = new ProcessManager(salesDbUnitOfWork, 
                 sourceDirectoryPath, targetDirectoryPath, filesExtension);

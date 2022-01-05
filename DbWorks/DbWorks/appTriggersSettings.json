@@ -1,8 +1,5 @@
 {
   "TriggersFolders": {
-    "CustomerInsert": "F:\\GitHub\\Task4\\DbWorks\\DbWorks\\Triggers\\InsertCustomerIfNotExists.sql",
-    "ManagerInsert": "F:\\GitHub\\Task4\\DbWorks\\DbWorks\\Triggers\\InsertManagerIfNotExists.sql",
-    "ProductInsert": "F:\\GitHub\\Task4\\DbWorks\\DbWorks\\Triggers\\InsertProductIfNotExists.sql",
-    "CustomerFullName": "F:\\GitHub\\Task4\\DbWorks\\DbWorks\\Triggers\\GenerateFullName.sql"
+    "CustomerFullName": "..\\..\\..\\..\\DbWorks\\triggers\\GenerateFullName.sql"
   }
 }
