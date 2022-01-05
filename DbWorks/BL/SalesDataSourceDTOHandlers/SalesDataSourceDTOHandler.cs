@@ -17,7 +17,8 @@ namespace BL.SalesDataSourceDTOHandlers
         {
             var customer = new Customer
             {
-                FirstName = SalesDataSourceDTORaw.CustomerFirstName, LastName = SalesDataSourceDTORaw.CustomerLastName
+                FirstName = SalesDataSourceDTORaw.CustomerFirstName, 
+                LastName = SalesDataSourceDTORaw.CustomerLastName
             };
 
             var manager = new Manager
@@ -33,15 +34,12 @@ namespace BL.SalesDataSourceDTOHandlers
 
             var order = new Order
             {
+                Date = DateTime.Parse(SalesDataSourceDTORaw.OrderDate),
+                Sum = decimal.Parse(SalesDataSourceDTORaw.OrderSum),
                 Customer = customer,
                 Manager = manager,
-                Date = DateTime.Parse(SalesDataSourceDTORaw.OrderDate),
-                Sum = decimal.Parse(SalesDataSourceDTORaw.OrderSum)
+                Product = product
             };
-
-            customer.Products.Add(product);
-            order.Products.Add(product);
-            manager.Orders.Add(order);
 
             return new SalesDataSourceDTO
             {
