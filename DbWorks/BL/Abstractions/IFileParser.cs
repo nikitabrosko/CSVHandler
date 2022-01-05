@@ -1,6 +1,8 @@
-﻿namespace BL.Abstractions
+﻿using System;
+
+namespace BL.Abstractions
 {
-    public interface IFileParser
+    public interface IFileParser : IDisposable
     {
         SalesDataSourceDTORaw ReadFile();
     }

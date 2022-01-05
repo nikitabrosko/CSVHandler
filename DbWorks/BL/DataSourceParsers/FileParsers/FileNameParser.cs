@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Text;
 using BL.Abstractions;
 
 namespace BL.DataSourceParsers.FileParsers
@@ -23,9 +24,19 @@ namespace BL.DataSourceParsers.FileParsers
 
         public string GetDate()
         {
-            return FileName.SkipWhile(c => char.IsLetter(c) || c.Equals('_'))
+            var date = FileName.SkipWhile(c => char.IsLetter(c) || c.Equals('_'))
                 .TakeWhile(char.IsDigit)
                 .Aggregate(string.Empty, (current, character) => current + character);
+
+            var newDate = new StringBuilder();
+
+            newDate.Append(date.Substring(0, 2))
+                .Append('.')
+                .Append(date.Substring(2, 2))
+                .Append('.')
+                .Append(date.Substring(4, 4));
+
+            return newDate.ToString();
         }
 
         protected virtual void Verify(string fileName)
@@ -48,7 +59,7 @@ namespace BL.DataSourceParsers.FileParsers
             var lastNameToValid = fileName.TakeWhile(char.IsLetter)
                 .Aggregate(string.Empty, (current, character) => current + character);
 
-            if (char.IsLetter(lastNameToValid.First()))
+            if (!char.IsLetter(lastNameToValid.First()))
             {
                 throw new ArgumentException("File name first letter can be letter!", nameof(fileName));
             }
@@ -78,7 +89,7 @@ namespace BL.DataSourceParsers.FileParsers
                 throw new ArgumentException("File name date day is invalid!", nameof(fileName));
             }
 
-            if (dateToValid.Skip(2).Take(1).All(c => (int.Parse(c.ToString()) is not 1 or 0)) 
+            if (dateToValid.Skip(2).Take(1).All(c => int.Parse(c.ToString()) > 1 || int.Parse(c.ToString()) < 0) 
                 || dateToValid.Skip(3).Take(1).All(c => int.Parse(c.ToString()) < 0))
             {
                 throw new ArgumentException("File name date month is invalid!", nameof(fileName));
