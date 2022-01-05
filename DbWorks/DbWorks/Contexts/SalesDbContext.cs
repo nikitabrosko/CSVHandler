@@ -1,7 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Common;
 using System.Data.Entity;
+using System.IO;
 using DbWorks.Models;
+using Microsoft.Extensions.Configuration;
 
 namespace DbWorks.Contexts
 {
@@ -17,14 +19,18 @@ namespace DbWorks.Contexts
             : base(connection, ownConnection)
         {
             _connection = connection;
-
-            Database.CreateIfNotExists();
+            
+            if (!Database.Exists())
+            {
+                Database.Create();
+                AddTriggersToDatabase();
+            }
         }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Customer>()
-                .HasKey(c => c.Id).Property(c => c.Id).HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
+                .HasIndex(c => new { c.FirstName, c.LastName }).IsUnique();
             modelBuilder.Entity<Customer>()
                 .Property(c => c.FirstName).IsRequired().HasMaxLength(20);
             modelBuilder.Entity<Customer>()
@@ -32,34 +38,39 @@ namespace DbWorks.Contexts
             modelBuilder.Entity<Customer>()
                 .Property(c => c.FullName).HasDatabaseGeneratedOption(DatabaseGeneratedOption.Computed);
             modelBuilder.Entity<Customer>()
-                .HasMany(c => c.Products);
+                .HasMany(c => c.Orders).WithRequired(o => o.Customer);
 
             modelBuilder.Entity<Manager>()
-                .HasKey(m => m.Id).Property(m => m.Id).HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
+                .HasIndex(m => new { m.LastName }).IsUnique();
             modelBuilder.Entity<Manager>()
                 .Property(m => m.LastName).IsRequired().HasMaxLength(30);
             modelBuilder.Entity<Manager>()
-                .HasMany(m => m.Orders);
-            
+                .HasMany(m => m.Orders).WithRequired(o => o.Manager);
+
+            modelBuilder.Entity<Product>()
+                .HasIndex(p => new { p.Name }).IsUnique();
+            modelBuilder.Entity<Product>()
+                .Property(p => p.Name).IsRequired().HasMaxLength(50);
+            modelBuilder.Entity<Product>()
+                .Property(p => p.Price).IsRequired();
+            modelBuilder.Entity<Product>()
+                .HasMany(p => p.Orders).WithRequired(o => o.Product);
+
             modelBuilder.Entity<Order>()
                 .HasKey(o => o.Id).Property(o => o.Id).HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
             modelBuilder.Entity<Order>()
                 .Property(o => o.Date).IsRequired();
             modelBuilder.Entity<Order>()
-                .Property(o => o.Sum).HasDatabaseGeneratedOption(DatabaseGeneratedOption.Computed);
-            modelBuilder.Entity<Order>()
-                .HasRequired(o => o.Customer);
-            modelBuilder.Entity<Order>()
-                .HasRequired(o => o.Manager);
-            modelBuilder.Entity<Order>()
-                .HasMany(o => o.Products);
-            
-            modelBuilder.Entity<Product>()
-                .HasKey(p => p.Id).Property(p => p.Id).HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
-            modelBuilder.Entity<Product>()
-                .Property(p => p.Name).IsRequired().HasMaxLength(50);
-            modelBuilder.Entity<Product>()
-                .Property(p => p.Price).IsRequired();
+                .Property(o => o.Sum).IsRequired();
+        }
+
+        private void AddTriggersToDatabase()
+        {
+            var config = new ConfigurationBuilder()
+                .AddJsonFile(@"F:\GitHub\Task4\DbWorks\DbWorks\appTriggersSettings.json")
+                .Build();
+
+            Database.ExecuteSqlCommand(File.ReadAllText(config.GetSection("TriggersFolders:CustomerFullName").Value));
         }
     }
 }
