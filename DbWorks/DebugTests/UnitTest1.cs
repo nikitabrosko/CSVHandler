@@ -15,27 +15,7 @@ namespace DebugTests
         [TestMethod]
         public void TestMethod1()
         {
-            var config = new ConfigurationBuilder()
-                .AddJsonFile(Path.GetFullPath(@"..\\..\\..\\appsettings.json"))
-                .Build();
-
-            var sourceDirectoryPath = Path.GetFullPath(config.GetSection("AppOptions:FolderOptions:Source").Value);
-            var targetDirectoryPath = Path.GetFullPath(config.GetSection("AppOptions:FolderOptions:Target").Value);
-            var filesExtension = config.GetSection("AppOptions:FolderOptions:Extension").Value;
-            var connectionString = config.GetSection("AppOptions:ConnectionOptions:Default").Value;
-
-            var salesDbContext = new SalesDbContextFactory().CreateInstance(new SqlConnection(connectionString));
-            var salesDbUnitOfWork = new SalesDbUnitOfWork(salesDbContext, new GenericRepositoryFactory());
-
-            var processManager = new ProcessManager(salesDbUnitOfWork, 
-                sourceDirectoryPath, targetDirectoryPath, filesExtension);
-
-            processManager.Run();
-
-            while (true)
-            {
-                
-            }
+            
         }
     }
 }
