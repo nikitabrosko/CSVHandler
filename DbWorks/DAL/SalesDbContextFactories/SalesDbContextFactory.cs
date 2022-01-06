@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Data.Common;
 using System.Data.Entity;
-using DAL.Abstractions;
 using DAL.Abstractions.Factories;
 using DbWorks.Contexts;
 

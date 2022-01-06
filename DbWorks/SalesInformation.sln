@@ -11,7 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BL", "BL\BL.csproj", "{641E
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DebugTests", "DebugTests\DebugTests.csproj", "{F8829BEB-BFC6-4DAF-9F60-9EB3D5E8A4F6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DALTests", "DALTests\DALTests.csproj", "{42A4E2D4-0A0B-4A42-A5F4-E3DDB1E6CD41}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DALTests", "DALTests\DALTests.csproj", "{42A4E2D4-0A0B-4A42-A5F4-E3DDB1E6CD41}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleClient", "ConsoleClient\ConsoleClient.csproj", "{DECD42DB-4AE2-4CEA-A42A-BE5F8EEC7ADD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{42A4E2D4-0A0B-4A42-A5F4-E3DDB1E6CD41}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{42A4E2D4-0A0B-4A42-A5F4-E3DDB1E6CD41}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{42A4E2D4-0A0B-4A42-A5F4-E3DDB1E6CD41}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DECD42DB-4AE2-4CEA-A42A-BE5F8EEC7ADD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DECD42DB-4AE2-4CEA-A42A-BE5F8EEC7ADD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DECD42DB-4AE2-4CEA-A42A-BE5F8EEC7ADD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DECD42DB-4AE2-4CEA-A42A-BE5F8EEC7ADD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

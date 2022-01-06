@@ -20,7 +20,7 @@ namespace DbWorks.Contexts
         {
             _connection = connection;
 
-            // Database.Delete();
+            //Database.Delete();
 
             if (!Database.Exists())
             {

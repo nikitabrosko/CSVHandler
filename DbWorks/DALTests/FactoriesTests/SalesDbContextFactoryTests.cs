@@ -1,13 +1,9 @@
-﻿using System.Data.Common;
-using System.Data.Entity;
-using DAL.Repositories;
-using DAL.RepositoryFactories;
+﻿using System;
+using System.Data.Common;
 using DAL.SalesDbContextFactories;
 using DbWorks.Contexts;
-using DbWorks.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using System.Linq;
 
 namespace DALTests.FactoriesTests
 {
@@ -24,6 +20,15 @@ namespace DALTests.FactoriesTests
             var actualSalesDbContext = salesDbContextFactory.CreateInstance(dbConnection, true);
 
             Assert.AreEqual(actualSalesDbContext.GetType(), expectedSalesDbContext.GetType());
+        }
+
+        [TestMethod]
+        public void TestSalesDbContextFactoryClassReturningElementDbConnectionIsNull()
+        {
+            DbConnection dbConnection = null;
+            var salesDbContextFactory = new SalesDbContextFactory();
+
+            Assert.ThrowsException<ArgumentNullException>(() => salesDbContextFactory.CreateInstance(dbConnection));
         }
     }
 }
