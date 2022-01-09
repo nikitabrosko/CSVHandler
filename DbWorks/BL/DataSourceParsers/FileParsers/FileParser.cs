@@ -12,13 +12,23 @@ namespace BL.DataSourceParsers.FileParsers
         private readonly string _filePath;
         private readonly TextReader _reader;
 
-        public FileParser(string path)
+        public FileParser(string fullPath)
         {
-            _filePath = path;
-            _reader = new StreamReader(path);
+            Verify(fullPath);
+
+            _filePath = fullPath;
+            _reader = new StreamReader(fullPath);
         }
 
-        public ISalesDataSourceDTORaw ReadFile()
+        private void Verify(string fullPath)
+        {
+            if (fullPath is null)
+            {
+                throw new ArgumentNullException(nameof(fullPath));
+            }
+        }
+
+        public ISalesDataSourceDTO ReadFile()
         {
             var fileNameParser = new FileNameParserFactory()
                 .CreateInstance(_filePath.Split("\\").Last());
@@ -27,16 +37,10 @@ namespace BL.DataSourceParsers.FileParsers
             var customerInfo = fileContentParser.ReadCustomerRecord();
             var productInfo = fileContentParser.ReadProductRecord();
 
-            return new SalesDataSourceDTORaw
-            {
-                CustomerFirstName = customerInfo[0],
-                CustomerLastName = customerInfo[1],
-                ProductName = productInfo[0],
-                ProductPrice = productInfo[1],
-                ManagerLastName = fileNameParser.GetLastName(),
-                OrderDate = fileNameParser.GetDate(),
-                OrderSum = fileContentParser.ReadSumRecord()
-            };
+            return new SalesDataSourceHandler(customerInfo[0], customerInfo[1],
+                fileNameParser.GetLastName(), productInfo[0], productInfo[1],
+                    fileNameParser.GetDate(), fileContentParser.ReadSumRecord())
+                .GetSalesDataSourceDTO();
         }
 
         public void Dispose()
