@@ -4,12 +4,9 @@ namespace BL.Abstractions
 {
     public interface ISalesDataSourceDTO
     {
-        Customer Customer { get; set; }
-
-        Manager Manager { get; set; }
-
-        Order Order { get; set; }
-
-        Product Product { get; set; }
+        Customer Customer { get; }
+        Manager Manager { get; }
+        Order Order { get; }
+        Product Product { get; }
     }
 }
