@@ -2,12 +2,10 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using BL.Abstractions;
 using BL.DataSourceParsers.FileParsersFactories;
 using BL.FileManagers;
-using BL.SalesDataSourceDTOs;
 using DAL.Abstractions.UnitOfWorks;
 
 namespace BL.ProcessManagers
@@ -171,9 +169,7 @@ namespace BL.ProcessManagers
             {
                 using (var fileParser = new FileParserFactory().CreateInstance(_sourceDirectoryPath + fileName))
                 {
-                    var dataRaw = new SalesDataSourceDTOHandler(fileParser.ReadFile());
-
-                    return dataRaw.TransformToSalesDataSourceDTO();
+                    return fileParser.ReadFile();
                 }
             }
             catch (IOException)
