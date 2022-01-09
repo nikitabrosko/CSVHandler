@@ -18,8 +18,7 @@ namespace BL.DataSourceParsers.FileParsers
 
         public string GetLastName()
         {
-            return FileName.TakeWhile(char.IsLetter)
-                .Aggregate(string.Empty, (current, character) => current + character);
+            return FileName.Split("_").First();
         }
 
         public string GetDate()
@@ -39,7 +38,7 @@ namespace BL.DataSourceParsers.FileParsers
             return newDate.ToString();
         }
 
-        protected virtual void Verify(string fileName)
+        private void Verify(string fileName)
         {
             if (fileName is null)
             {
@@ -56,8 +55,7 @@ namespace BL.DataSourceParsers.FileParsers
                 throw new ArgumentException("File name should contains a '_' symbol!", nameof(fileName));
             }
 
-            var lastNameToValid = fileName.TakeWhile(char.IsLetter)
-                .Aggregate(string.Empty, (current, character) => current + character);
+            var lastNameToValid = fileName.Split("_").First();
 
             if (!char.IsLetter(lastNameToValid.First()))
             {
@@ -83,14 +81,33 @@ namespace BL.DataSourceParsers.FileParsers
                 throw new ArgumentException("File name date length should be equal 8!", nameof(fileName));
             }
 
-            if (dateToValid.Take(1).All(c => (int.Parse(c.ToString()) > 3) || (int.Parse(c.ToString()) < 0)) 
-                || dateToValid.Skip(1).Take(1).All(c => int.Parse(c.ToString()) < 0))
+            var firstDayExpression = dateToValid
+                .Take(1)
+                .All(c => (int.Parse(c.ToString()) > 3) || (int.Parse(c.ToString()) < 0));
+            var secondDayExpression = dateToValid
+                .Skip(1)
+                .Take(1)
+                .All(c => int.Parse(c.ToString()) < 0);
+            var thirdDayExpression = dateToValid.Take(1).All(c => (int.Parse(c.ToString()) == 3))
+                                     && dateToValid.Skip(1).Take(1).All(c => int.Parse(c.ToString()) > 1);
+
+            if (firstDayExpression || secondDayExpression || thirdDayExpression)
             {
                 throw new ArgumentException("File name date day is invalid!", nameof(fileName));
             }
 
-            if (dateToValid.Skip(2).Take(1).All(c => int.Parse(c.ToString()) > 1 || int.Parse(c.ToString()) < 0) 
-                || dateToValid.Skip(3).Take(1).All(c => int.Parse(c.ToString()) < 0))
+            var firstDateExpression = dateToValid
+                .Skip(2)
+                .Take(1)
+                .All(c => int.Parse(c.ToString()) > 1 || int.Parse(c.ToString()) < 0);
+            var secondDateExpression = dateToValid
+                .Skip(3)
+                .Take(1)
+                .All(c => int.Parse(c.ToString()) < 0);
+            var thirdDateExpression = dateToValid.Skip(2).Take(1).All(c => int.Parse(c.ToString()) == 1)
+                                      && dateToValid.Skip(3).Take(1).All(c => int.Parse(c.ToString()) > 1);
+
+            if (firstDayExpression || secondDayExpression || thirdDateExpression)
             {
                 throw new ArgumentException("File name date month is invalid!", nameof(fileName));
             }
