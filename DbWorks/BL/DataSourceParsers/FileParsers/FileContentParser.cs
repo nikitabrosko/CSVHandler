@@ -1,4 +1,5 @@
-﻿using BL.Abstractions;
+﻿using System;
+using BL.Abstractions;
 
 namespace BL.DataSourceParsers.FileParsers
 {
@@ -8,7 +9,17 @@ namespace BL.DataSourceParsers.FileParsers
 
         public FileContentParser(string content)
         {
+            Verify(content);
+
             _records = content.Split(";");
+        }
+
+        private void Verify(string contentToVerify)
+        {
+            if (contentToVerify is null)
+            {
+                throw new ArgumentNullException(nameof(contentToVerify));
+            }
         }
 
         public string ReadDataRecord()
