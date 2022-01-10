@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using BL.Abstractions;
 using BL.DataSourceParsers.FileParsersFactories;
@@ -12,6 +12,8 @@ namespace BL.ProcessManagers
 {
     public class ProcessManager : IProcessManager
     {
+        private readonly Mutex _mutex = new Mutex();
+
         public event EventHandler<CompletionStateEventArgs> Completed;
         public event EventHandler<CompletionStateEventArgs> Failed;
 
@@ -20,7 +22,6 @@ namespace BL.ProcessManagers
         private readonly string _sourceDirectoryPath;
         private readonly string _targetDirectoryPath;
         private readonly string _filesExtension;
-        private readonly IList<string> _runningFiles = new List<string>();
 
         public ProcessManager(ISalesDbUnitOfWork unitOfWork, 
             string sourceDirectoryPath, 
@@ -31,18 +32,6 @@ namespace BL.ProcessManagers
             _sourceDirectoryPath = sourceDirectoryPath;
             _targetDirectoryPath = targetDirectoryPath;
             _filesExtension = filesExtension;
-        }
-
-        public async void RunAsync()
-        {
-            await Task.Factory.StartNew(() =>
-            {
-                _fileManager = new FileManager(_sourceDirectoryPath, _filesExtension);
-
-                FindAndHandleCurrentFiles();
-
-                _fileManager.FileIsAdd += OnFileIsAdd;
-            });
         }
 
         public void Run()
@@ -60,7 +49,7 @@ namespace BL.ProcessManagers
             _fileManager.Stop();
         }
 
-        private async void FindAndHandleCurrentFiles()
+        private void FindAndHandleCurrentFiles()
         {
             var filesInDirectory = Directory.GetFiles(_sourceDirectoryPath, _filesExtension);
 
@@ -68,37 +57,33 @@ namespace BL.ProcessManagers
             {
                 foreach (var file in filesInDirectory)
                 {
-                    await Task.Factory.StartNew(() => 
-                        SaveDataAndMoveFiles(Path.GetFileName(file)));
+                    Task.Factory.StartNew(() =>
+                        SaveDataAndMoveFile(Path.GetFileName(file)));
                 }
             }
         }
 
-        private void SaveDataAndMoveFiles(string fileName)
+        private void SaveDataAndMoveFile(string fileName)
         {
             try
             {
-                if (!_runningFiles.Contains(fileName))
-                {
-                    _runningFiles.Add(fileName);
+                // Debug code for Threads
+                Console.WriteLine($"{Thread.CurrentThread.ManagedThreadId} is start");
 
-                    SaveDataToDatabase(ParseFile(fileName));
-                    _fileManager.MoveFileToAnotherDirectory(_targetDirectoryPath, fileName);
+                var data = ParseFile(fileName);
 
-                    _runningFiles.Remove(fileName);
-                }
+                _mutex.WaitOne();
+                SaveDataToDatabase(data);
+                _mutex.ReleaseMutex();
+                _fileManager.MoveFileToAnotherDirectory(_targetDirectoryPath, fileName);
+
+                // Debug code for Threads
+                Console.WriteLine($"{Thread.CurrentThread.ManagedThreadId} is end");
             }
             catch (Exception)
             {
                 OnFailed(this, new CompletionStateEventArgs(CompletionState.Failed, fileName));
                 throw;
-            }
-            finally
-            {
-                if (_runningFiles.Contains(fileName))
-                {
-                    _runningFiles.Remove(fileName);
-                }
             }
 
             OnCompleted(this, new CompletionStateEventArgs(CompletionState.Completed, fileName));
@@ -106,20 +91,25 @@ namespace BL.ProcessManagers
 
         private void OnFileIsAdd(object sender, FileSystemEventArgs args)
         {
-            SaveDataAndMoveFiles(args.Name);
+            HandleFile(args.Name);
+        }
+
+        private void HandleFile(string fileName)
+        {
+            new Task(() => SaveDataAndMoveFile(fileName)).Start();
         }
 
         private void SaveDataToDatabase(ISalesDataSourceDTO dataToSave)
         {
-            CustomerCheck();
-            ManagerCheck();
-            ProductCheck();
+            CustomerCheckAndInsert();
+            ManagerCheckAndInsert();
+            ProductCheckAndInsert();
 
             _unitOfWork.OrderRepository.Insert(dataToSave.Order);
 
             _unitOfWork.Save();
 
-            void CustomerCheck()
+            void CustomerCheckAndInsert()
             {
                 if (!_unitOfWork.CustomerRepository.Get().Any(c => c.FirstName.Equals(dataToSave.Customer.FirstName)
                                                                    && c.LastName.Equals(dataToSave.Customer.LastName)))
@@ -134,7 +124,7 @@ namespace BL.ProcessManagers
                 }
             }
 
-            void ManagerCheck()
+            void ManagerCheckAndInsert()
             {
                 if (!_unitOfWork.ManagerRepository.Get().Any(m => m.LastName.Equals(dataToSave.Manager.LastName)))
                 {
@@ -147,7 +137,7 @@ namespace BL.ProcessManagers
                 }
             }
 
-            void ProductCheck()
+            void ProductCheckAndInsert()
             {
                 if (!_unitOfWork.ProductRepository.Get().Any(p => p.Name.Equals(dataToSave.Product.Name)
                                                                   && p.Price.Equals(dataToSave.Product.Price)))
@@ -167,10 +157,10 @@ namespace BL.ProcessManagers
         {
             try
             {
-                using (var fileParser = new FileParserFactory().CreateInstance(_sourceDirectoryPath + fileName))
-                {
-                    return fileParser.ReadFile();
-                }
+                using var fileParser = new FileParserFactory()
+                    .CreateInstance(_sourceDirectoryPath + fileName);
+
+                return fileParser.ReadFile();
             }
             catch (IOException)
             {
@@ -182,6 +172,7 @@ namespace BL.ProcessManagers
         public void Dispose()
         {
             Stop();
+            _mutex.Dispose();
             _unitOfWork.Dispose();
             _fileManager.Dispose();
             GC.SuppressFinalize(this);

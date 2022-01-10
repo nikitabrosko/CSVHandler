@@ -36,7 +36,7 @@ namespace ConsoleClient
             try
             {
                 Console.WriteLine("Listening...");
-                _processManager.RunAsync();
+                _processManager.Run();
             }
             catch (Exception)
             {

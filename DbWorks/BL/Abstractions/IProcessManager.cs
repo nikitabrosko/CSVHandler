@@ -7,7 +7,6 @@ namespace BL.Abstractions
         event EventHandler<CompletionStateEventArgs> Completed;
         event EventHandler<CompletionStateEventArgs> Failed;
         void Run();
-        void RunAsync();
         void Stop();
     }
 }

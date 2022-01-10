@@ -11,7 +11,7 @@ namespace BL.FileManagers
         private readonly FileSystemWatcher _fileSystemWatcher;
         private readonly string _directoryPath;
 
-        public bool IsDisposed;
+        public bool IsDisposed { get; protected set; }
         
         public FileManager(string directoryPath, string filesToWatchExtension)
         {
