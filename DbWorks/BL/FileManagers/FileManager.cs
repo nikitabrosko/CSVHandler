@@ -34,8 +34,16 @@ namespace BL.FileManagers
 
         public void MoveFileToAnotherDirectory(string targetDirectoryPath, string fileName)
         {
-            File.Move(_directoryPath + fileName, targetDirectoryPath + fileName);
-            File.Delete(_directoryPath + fileName);
+            var sourceFullPath = string.Concat(_directoryPath, fileName);
+            var targetFullPath = string.Concat(targetDirectoryPath, fileName);
+
+            if (File.Exists(targetFullPath))
+            {
+                File.Delete(targetFullPath);
+            }
+
+            File.Move(sourceFullPath, targetFullPath);
+            File.Delete(sourceFullPath);
         }
 
         protected virtual void OnCreated(object sender, FileSystemEventArgs args)
