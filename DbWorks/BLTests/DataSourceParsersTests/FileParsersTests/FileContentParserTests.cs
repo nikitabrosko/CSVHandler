@@ -18,7 +18,7 @@ namespace BLTests.DataSourceParsersTests.FileParsersTests
         }
 
         [TestMethod]
-        public void FileContentParserReadDataRecordMethodTest()
+        public void FileContentParserReadDateRecordMethodTest()
         {
             var fileContentParser = new FileContentParser(DataAccessForTests.FileText);
 
@@ -32,9 +32,18 @@ namespace BLTests.DataSourceParsersTests.FileParsersTests
                 .Append(date.Substring(4, 4))
                 .ToString();
 
-            var actualContent = fileContentParser.ReadDataRecord();
+            var actualContent = fileContentParser.ReadDateRecord();
 
             Assert.AreEqual(expectedContent, actualContent);
+        }
+
+        [TestMethod]
+        public void FileContentParserReadDateRecordMethodRecordIsEmptyTest()
+        {
+            var fileContentParser = new FileContentParser(";Ivan Sidorov;Telephone, 5;20");
+
+            Assert.ThrowsException<ArgumentException>(() => fileContentParser.ReadDateRecord(),
+                "Date record in file content is empty or whitespace");
         }
 
         [TestMethod]
@@ -49,6 +58,15 @@ namespace BLTests.DataSourceParsersTests.FileParsersTests
         }
 
         [TestMethod]
+        public void FileContentParserReadCustomerRecordMethodRecordIsEmptyTest()
+        {
+            var fileContentParser = new FileContentParser("01012022;;Telephone, 5;20");
+
+            Assert.ThrowsException<ArgumentException>(() => fileContentParser.ReadCustomerRecord(),
+                "Customer record in file content is empty or whitespace");
+        }
+
+        [TestMethod]
         public void FileContentParserReadProductRecordMethodTest()
         {
             var fileContentParser = new FileContentParser(DataAccessForTests.FileText);
@@ -60,6 +78,14 @@ namespace BLTests.DataSourceParsersTests.FileParsersTests
         }
 
         [TestMethod]
+        public void FileContentParserReadProductRecordMethodRecordIsEmptyTest()
+        {
+            var fileContentParser = new FileContentParser("01012022;Ivan Sidorov;;20");
+            Assert.ThrowsException<ArgumentException>(() => fileContentParser.ReadProductRecord(),
+                "Product record in file content is empty or whitespace");
+        }
+
+        [TestMethod]
         public void FileContentParserReadSumRecordMethodTest()
         {
             var fileContentParser = new FileContentParser(DataAccessForTests.FileText);
@@ -68,6 +94,15 @@ namespace BLTests.DataSourceParsersTests.FileParsersTests
             var actualContent = fileContentParser.ReadSumRecord();
 
             Assert.AreEqual(expectedContent, actualContent);
+        }
+
+        [TestMethod]
+        public void FileContentParserReadSumRecordMethodRecordIsEmptyTest()
+        {
+            var fileContentParser = new FileContentParser("01012022;Ivan Sidorov;Telephone, 5;");
+
+            Assert.ThrowsException<ArgumentException>(() => fileContentParser.ReadSumRecord(),
+                "Sum record in file content is empty or whitespace");
         }
     }
 }
