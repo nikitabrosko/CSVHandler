@@ -13,7 +13,7 @@ namespace BLTests.DataSourceParsersTests
 
         public static string FileName => "Test_01012022.csv";
 
-        public static string FileText => "01012022;Ivan Sidorov;Telephone, 5;20";
+        public static string FileText => File.ReadAllText(PathToFolder + FileName);
 
         public static void CreateFileIfNotExists()
         {

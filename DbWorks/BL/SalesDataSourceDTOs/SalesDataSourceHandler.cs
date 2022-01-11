@@ -71,7 +71,7 @@ namespace BL.SalesDataSourceDTOs
             return new SalesDataSourceDTO(customer, manager, order, product);
         }
 
-        private void Verify(string customerFirstName,
+        private static void Verify(string customerFirstName,
             string customerLastName,
             string managerLastName,
             string productName,
