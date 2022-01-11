@@ -18,7 +18,14 @@ namespace BL.DataSourceParsers.FileParsers
 
         public string GetLastName()
         {
-            return FileName.Split("_").First();
+            var name = FileName.Split("_").First();
+
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                throw new ArgumentException("Last name in file name is empty or whitespace");
+            }
+
+            return name;
         }
 
         public string GetDate()
@@ -26,6 +33,11 @@ namespace BL.DataSourceParsers.FileParsers
             var date = FileName.SkipWhile(c => char.IsLetter(c) || c.Equals('_'))
                 .TakeWhile(char.IsDigit)
                 .Aggregate(string.Empty, (current, character) => current + character);
+
+            if (string.IsNullOrWhiteSpace(date))
+            {
+                throw new ArgumentException("Date in file name is empty or whitespace");
+            }
 
             var newDate = new StringBuilder();
 
@@ -38,7 +50,7 @@ namespace BL.DataSourceParsers.FileParsers
             return newDate.ToString();
         }
 
-        private void Verify(string fileName)
+        private static void Verify(string fileName)
         {
             if (fileName is null)
             {

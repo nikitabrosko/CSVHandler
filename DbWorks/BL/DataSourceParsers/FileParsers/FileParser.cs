@@ -20,7 +20,7 @@ namespace BL.DataSourceParsers.FileParsers
             _reader = new StreamReader(fullPath);
         }
 
-        private void Verify(string fullPath)
+        private static void Verify(string fullPath)
         {
             if (fullPath is null)
             {
@@ -39,7 +39,7 @@ namespace BL.DataSourceParsers.FileParsers
 
             return new SalesDataSourceHandler(customerInfo[0], customerInfo[1],
                 fileNameParser.GetLastName(), productInfo[0], productInfo[1],
-                    fileNameParser.GetDate(), fileContentParser.ReadSumRecord())
+                    fileContentParser.ReadDataRecord(), fileContentParser.ReadSumRecord())
                 .GetSalesDataSourceDTO();
         }
 
