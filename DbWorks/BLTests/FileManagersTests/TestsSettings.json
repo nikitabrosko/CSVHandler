@@ -1,0 +1,10 @@
+{
+  "TestFilesFolders": {
+    "SourceFolder": "..\\..\\..\\..\\BLTests\\FileManagersTests\\SourceFolder\\",
+    "TargetFolder": "..\\..\\..\\..\\BLTests\\FileManagersTests\\TargetFolder\\"
+  },
+
+  "FilesExtensions": {
+    "FilesExtensionForTests" : "*.csv" 
+  } 
+}
