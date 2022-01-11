@@ -15,6 +15,8 @@ namespace BL.FileManagers
         
         public FileManager(string directoryPath, string filesToWatchExtension)
         {
+            Verify(directoryPath, filesToWatchExtension);
+
             _directoryPath = directoryPath;
 
             _fileSystemWatcher = new FileSystemWatcher(directoryPath)
@@ -22,6 +24,26 @@ namespace BL.FileManagers
                 Filter = filesToWatchExtension
             };
 
+            Start();
+        }
+
+        private static void Verify(string directoryPath, string filesToWatchExtension)
+        {
+            if (string.IsNullOrWhiteSpace(directoryPath))
+            {
+                throw new ArgumentException("argument is null, empty or whitespace",
+                    nameof(directoryPath));
+            }
+
+            if (string.IsNullOrWhiteSpace(filesToWatchExtension))
+            {
+                throw new ArgumentException("argument is null, empty or whitespace",
+                    nameof(filesToWatchExtension));
+            }
+        }
+
+        public void Start()
+        {
             _fileSystemWatcher.Created += OnCreated;
 
             _fileSystemWatcher.EnableRaisingEvents = true;
@@ -30,6 +52,8 @@ namespace BL.FileManagers
         public void Stop()
         {
             _fileSystemWatcher.Created -= OnCreated;
+
+            _fileSystemWatcher.EnableRaisingEvents = false;
         }
 
         public void MoveFileToAnotherDirectory(string targetDirectoryPath, string fileName)
@@ -53,7 +77,7 @@ namespace BL.FileManagers
         
         public void Dispose()
         {
-            _fileSystemWatcher.Created -= OnCreated;
+            Stop();
             _fileSystemWatcher?.Dispose();
             IsDisposed = true;
             GC.SuppressFinalize(this);

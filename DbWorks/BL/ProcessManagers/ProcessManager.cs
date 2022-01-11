@@ -28,10 +28,41 @@ namespace BL.ProcessManagers
             string targetDirectoryPath,
             string filesExtension)
         {
+            Verify(unitOfWork, sourceDirectoryPath, targetDirectoryPath, filesExtension);
+
             _unitOfWork = unitOfWork;
             _sourceDirectoryPath = sourceDirectoryPath;
             _targetDirectoryPath = targetDirectoryPath;
             _filesExtension = filesExtension;
+        }
+
+        private static void Verify(ISalesDbUnitOfWork unitOfWork,
+            string sourceDirectoryPath,
+            string targetDirectoryPath,
+            string filesExtension)
+        {
+            if (unitOfWork is null)
+            {
+                throw new ArgumentNullException(nameof(unitOfWork));
+            }
+
+            if (string.IsNullOrWhiteSpace(sourceDirectoryPath))
+            {
+                throw new ArgumentException("argument is null, empty or whitespace", 
+                    nameof(sourceDirectoryPath));
+            }
+
+            if (string.IsNullOrWhiteSpace(targetDirectoryPath))
+            {
+                throw new ArgumentException("argument is null, empty or whitespace",
+                    nameof(targetDirectoryPath));
+            }
+
+            if (string.IsNullOrWhiteSpace(filesExtension))
+            {
+                throw new ArgumentException("argument is null, empty or whitespace",
+                    nameof(filesExtension));
+            }
         }
 
         public void Run()
