@@ -2,7 +2,7 @@
 {
     public interface IFileContentParser
     {
-        string ReadDataRecord();
+        string ReadDateRecord();
         string[] ReadCustomerRecord();
         string[] ReadProductRecord();
         string ReadSumRecord();

@@ -39,7 +39,7 @@ namespace BL.DataSourceParsers.FileParsers
 
             return new SalesDataSourceHandler(customerInfo[0], customerInfo[1],
                 fileNameParser.GetLastName(), productInfo[0], productInfo[1],
-                    fileContentParser.ReadDataRecord(), fileContentParser.ReadSumRecord())
+                    fileContentParser.ReadDateRecord(), fileContentParser.ReadSumRecord())
                 .GetSalesDataSourceDTO();
         }
 

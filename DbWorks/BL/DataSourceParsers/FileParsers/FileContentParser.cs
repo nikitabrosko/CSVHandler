@@ -24,7 +24,7 @@ namespace BL.DataSourceParsers.FileParsers
             }
         }
 
-        public string ReadDataRecord()
+        public string ReadDateRecord()
         {
             var dateRecord = _records[0];
 
