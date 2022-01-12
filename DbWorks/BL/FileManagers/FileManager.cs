@@ -58,6 +58,11 @@ namespace BL.FileManagers
 
         public void MoveFileToAnotherDirectory(string targetDirectoryPath, string fileName)
         {
+            if (!Directory.Exists(targetDirectoryPath))
+            {
+                Directory.CreateDirectory(targetDirectoryPath);
+            }
+
             var sourceFullPath = string.Concat(_directoryPath, fileName);
             var targetFullPath = string.Concat(targetDirectoryPath, fileName);
 
