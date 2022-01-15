@@ -1,7 +1,7 @@
-﻿using System.Data.Entity;
-using DAL.Repositories;
+﻿using DAL.Repositories;
 using DAL.RepositoryFactories;
-using DbWorks.Models;
+using DatabaseLayer.Models;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 

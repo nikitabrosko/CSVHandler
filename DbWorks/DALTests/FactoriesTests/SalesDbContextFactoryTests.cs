@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Data.Common;
 using DAL.SalesDbContextFactories;
-using DbWorks.Contexts;
+using DatabaseLayer.Contexts;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
@@ -13,11 +13,11 @@ namespace DALTests.FactoriesTests
         [TestMethod]
         public void TestSalesDbContextFactoryClassReturningElement()
         {
-            var dbConnection = new Mock<DbConnection>().Object;
+            var contextOptions = new Mock<DbContextOptions<SalesDbContext>>().Object;
             var salesDbContextFactory = new SalesDbContextFactory();
 
-            var expectedSalesDbContext = new SalesDbContext(dbConnection, true);
-            var actualSalesDbContext = salesDbContextFactory.CreateInstance(dbConnection, true);
+            var expectedSalesDbContext = new SalesDbContext(contextOptions);
+            var actualSalesDbContext = salesDbContextFactory.CreateInstance(contextOptions);
 
             Assert.AreEqual(actualSalesDbContext.GetType(), expectedSalesDbContext.GetType());
         }
@@ -25,10 +25,10 @@ namespace DALTests.FactoriesTests
         [TestMethod]
         public void TestSalesDbContextFactoryClassReturningElementDbConnectionIsNull()
         {
-            DbConnection dbConnection = null;
+            DbContextOptions<SalesDbContext> contextOptions = null;
             var salesDbContextFactory = new SalesDbContextFactory();
 
-            Assert.ThrowsException<ArgumentNullException>(() => salesDbContextFactory.CreateInstance(dbConnection));
+            Assert.ThrowsException<ArgumentNullException>(() => salesDbContextFactory.CreateInstance(contextOptions));
         }
     }
 }

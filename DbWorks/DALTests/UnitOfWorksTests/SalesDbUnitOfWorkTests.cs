@@ -1,12 +1,12 @@
 using System;
 using System.Data.Common;
-using System.Data.Entity;
 using DAL.Abstractions.Factories;
 using DAL.Repositories;
 using DAL.RepositoryFactories;
 using DAL.UnitOfWorks;
-using DbWorks.Models;
-using DbWorks.Contexts;
+using DatabaseLayer.Contexts;
+using DatabaseLayer.Models;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
@@ -18,8 +18,8 @@ namespace DALTests.UnitOfWorksTests
         [TestMethod]
         public void TestSalesDbUnitOfWorkClassGetCustomerRepository()
         {
-            var dbConnectionMock = new Mock<DbConnection>();
-            var dbContext = new SalesDbContext(dbConnectionMock.Object, true);
+            var contextOptions = new Mock<DbContextOptions<SalesDbContext>>().Object;
+            var dbContext = new SalesDbContext(contextOptions);
             var repositoryFactory = new GenericRepositoryFactory();
 
             var salesDbUnitOfWorkObject = new SalesDbUnitOfWork(dbContext, repositoryFactory);
@@ -35,8 +35,8 @@ namespace DALTests.UnitOfWorksTests
         [TestMethod]
         public void TestSalesDbUnitOfWorkClassGetManagerRepository()
         {
-            var dbConnectionMock = new Mock<DbConnection>();
-            var dbContext = new SalesDbContext(dbConnectionMock.Object, true);
+            var contextOptions = new Mock<DbContextOptions<SalesDbContext>>().Object;
+            var dbContext = new SalesDbContext(contextOptions);
             var repositoryFactory = new GenericRepositoryFactory();
 
             var salesDbUnitOfWorkObject = new SalesDbUnitOfWork(dbContext, repositoryFactory);
@@ -52,8 +52,8 @@ namespace DALTests.UnitOfWorksTests
         [TestMethod]
         public void TestSalesDbUnitOfWorkClassGetOrderRepository()
         {
-            var dbConnectionMock = new Mock<DbConnection>();
-            var dbContext = new SalesDbContext(dbConnectionMock.Object, true);
+            var contextOptions = new Mock<DbContextOptions<SalesDbContext>>().Object;
+            var dbContext = new SalesDbContext(contextOptions);
             var repositoryFactory = new GenericRepositoryFactory();
 
             var salesDbUnitOfWorkObject = new SalesDbUnitOfWork(dbContext, repositoryFactory);
@@ -69,8 +69,8 @@ namespace DALTests.UnitOfWorksTests
         [TestMethod]
         public void TestSalesDbUnitOfWorkClassGetProductRepository()
         {
-            var dbConnectionMock = new Mock<DbConnection>();
-            var dbContext = new SalesDbContext(dbConnectionMock.Object, true);
+            var contextOptions = new Mock<DbContextOptions<SalesDbContext>>().Object;
+            var dbContext = new SalesDbContext(contextOptions);
             var repositoryFactory = new GenericRepositoryFactory();
 
             var salesDbUnitOfWorkObject = new SalesDbUnitOfWork(dbContext, repositoryFactory);
@@ -86,8 +86,8 @@ namespace DALTests.UnitOfWorksTests
         [TestMethod]
         public void TestSalesDbUnitOfWorkClassDisposeMethod()
         {
-            var dbConnectionMock = new Mock<DbConnection>();
-            var dbContext = new SalesDbContext(dbConnectionMock.Object, true);
+            var contextOptions = new Mock<DbContextOptions<SalesDbContext>>().Object;
+            var dbContext = new SalesDbContext(contextOptions);
             var repositoryFactory = new GenericRepositoryFactory();
 
             var salesDbUnitOfWorkObject = new SalesDbUnitOfWork(dbContext, repositoryFactory);
@@ -114,11 +114,11 @@ namespace DALTests.UnitOfWorksTests
         [TestMethod]
         public void TestSalesDbUnitOfWorkClassCreatingWithInvalidParametersRepositoryFactoryIsNull()
         {
-            var dbContextMock = new Mock<DbContext>();
+            var dbContext = new Mock<DbContext>().Object;
             IGenericRepositoryFactory repositoryFactory = null;
 
             Assert.ThrowsException<ArgumentNullException>(() =>
-                new SalesDbUnitOfWork(dbContextMock.Object, repositoryFactory), nameof(IGenericRepositoryFactory));
+                new SalesDbUnitOfWork(dbContext, repositoryFactory), nameof(IGenericRepositoryFactory));
         }
     }
 }
