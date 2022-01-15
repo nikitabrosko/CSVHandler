@@ -1,6 +1,6 @@
 ﻿using System;
 using BL.Abstractions;
-using DbWorks.Models;
+using DatabaseLayer.Models;
 
 namespace BL.SalesDataSourceDTOs
 {
@@ -25,7 +25,7 @@ namespace BL.SalesDataSourceDTOs
             Product = product;
         }
 
-        private void Verify(Customer customer, Manager manager, Order order, Product product)
+        private static void Verify(Customer customer, Manager manager, Order order, Product product)
         {
             if (customer is null)
             {

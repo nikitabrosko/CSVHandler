@@ -1,6 +1,6 @@
 ﻿using System;
 using BL.Abstractions;
-using DbWorks.Models;
+using DatabaseLayer.Models;
 
 namespace BL.SalesDataSourceDTOs
 {
