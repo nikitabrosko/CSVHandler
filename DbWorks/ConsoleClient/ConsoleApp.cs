@@ -1,11 +1,13 @@
 ﻿using System;
-using System.Data.SqlClient;
 using System.IO;
 using BL.Abstractions;
+using BL.ConfigurationOptions;
 using BL.ProcessManagers;
 using DAL.RepositoryFactories;
 using DAL.SalesDbContextFactories;
 using DAL.UnitOfWorks;
+using DatabaseLayer.Contexts;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
 namespace ConsoleClient
@@ -20,16 +22,21 @@ namespace ConsoleClient
                 .AddJsonFile(Path.GetFullPath(@"..\\..\\..\\appsettings.json"))
                 .Build();
 
-            var sourceDirectoryPath = Path.GetFullPath(config.GetSection("AppOptions:FolderOptions:Source").Value);
-            var targetDirectoryPath = Path.GetFullPath(config.GetSection("AppOptions:FolderOptions:Target").Value);
-            var filesExtension = config.GetSection("AppOptions:FolderOptions:Extension").Value;
-            var connectionString = config.GetSection("AppOptions:ConnectionOptions:Default").Value;
+            var fileConfiguration = new FileConfigurationOptions();
 
-            var salesDbContext = new SalesDbContextFactory().CreateInstance(new SqlConnection(connectionString));
+            config.Bind("AppOptions:FolderOptions", fileConfiguration);
+
+            var connectionString = config.GetSection("ConnectionStrings:Default").Value;
+
+            var contextOptions = new DbContextOptionsBuilder<SalesDbContext>()
+                .UseSqlServer(connectionString)
+                .Options;
+
+            var salesDbContext = new SalesDbContextFactory()
+                .CreateInstance(contextOptions);
             var salesDbUnitOfWork = new SalesDbUnitOfWork(salesDbContext, new GenericRepositoryFactory());
 
-            _processManager = new ProcessManager(salesDbUnitOfWork,
-                sourceDirectoryPath, targetDirectoryPath, filesExtension);
+            _processManager = new ProcessManager(salesDbUnitOfWork, fileConfiguration);
 
             Configure();
 
