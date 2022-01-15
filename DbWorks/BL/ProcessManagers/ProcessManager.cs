@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using BL.Abstractions;
+using BL.Abstractions.ConfigurationOptions;
 using BL.DataSourceParsers.FileParsersFactories;
 using BL.FileManagers;
 using DAL.Abstractions.UnitOfWorks;
@@ -19,55 +20,46 @@ namespace BL.ProcessManagers
 
         private IFileManager _fileManager;
         private readonly ISalesDbUnitOfWork _unitOfWork;
-        private readonly string _sourceDirectoryPath;
-        private readonly string _targetDirectoryPath;
-        private readonly string _filesExtension;
+        private readonly IFileConfigurationOptions _fileConfiguration;
 
-        public ProcessManager(ISalesDbUnitOfWork unitOfWork, 
-            string sourceDirectoryPath, 
-            string targetDirectoryPath,
-            string filesExtension)
+        public ProcessManager(ISalesDbUnitOfWork unitOfWork, IFileConfigurationOptions fileConfiguration)
         {
-            Verify(unitOfWork, sourceDirectoryPath, targetDirectoryPath, filesExtension);
+            Verify(unitOfWork, fileConfiguration);
 
             _unitOfWork = unitOfWork;
-            _sourceDirectoryPath = sourceDirectoryPath;
-            _targetDirectoryPath = targetDirectoryPath;
-            _filesExtension = filesExtension;
+            _fileConfiguration = fileConfiguration;
         }
 
-        private static void Verify(ISalesDbUnitOfWork unitOfWork,
-            string sourceDirectoryPath,
-            string targetDirectoryPath,
-            string filesExtension)
+        private static void Verify(ISalesDbUnitOfWork unitOfWork, IFileConfigurationOptions fileConfiguration)
         {
             if (unitOfWork is null)
             {
                 throw new ArgumentNullException(nameof(unitOfWork));
             }
 
-            if (string.IsNullOrWhiteSpace(sourceDirectoryPath))
+            if (string.IsNullOrWhiteSpace(fileConfiguration.SourceDirectoryPath))
             {
                 throw new ArgumentException("argument is null, empty or whitespace", 
-                    nameof(sourceDirectoryPath));
+                    nameof(fileConfiguration));
             }
 
-            if (string.IsNullOrWhiteSpace(targetDirectoryPath))
+            if (string.IsNullOrWhiteSpace(fileConfiguration.TargetDirectoryPath))
             {
                 throw new ArgumentException("argument is null, empty or whitespace",
-                    nameof(targetDirectoryPath));
+                    nameof(fileConfiguration));
             }
 
-            if (string.IsNullOrWhiteSpace(filesExtension))
+            if (string.IsNullOrWhiteSpace(fileConfiguration.FilesExtension))
             {
                 throw new ArgumentException("argument is null, empty or whitespace",
-                    nameof(filesExtension));
+                    nameof(fileConfiguration));
             }
         }
 
         public void Run()
         {
-            _fileManager = new FileManager(_sourceDirectoryPath, _filesExtension);
+            _fileManager = new FileManager(_fileConfiguration.SourceDirectoryPath, 
+                _fileConfiguration.FilesExtension);
 
             FindAndHandleCurrentFiles();
 
@@ -82,7 +74,8 @@ namespace BL.ProcessManagers
 
         private void FindAndHandleCurrentFiles()
         {
-            var filesInDirectory = Directory.GetFiles(_sourceDirectoryPath, _filesExtension);
+            var filesInDirectory = Directory.GetFiles(_fileConfiguration.SourceDirectoryPath, 
+                _fileConfiguration.FilesExtension);
 
             if (filesInDirectory.Length != 0)
             {
@@ -98,18 +91,12 @@ namespace BL.ProcessManagers
         {
             try
             {
-                // Debug code for Threads
-                Console.WriteLine($"{Thread.CurrentThread.ManagedThreadId} is start");
-
                 var data = ParseFile(fileName);
 
                 _mutex.WaitOne();
                 SaveDataToDatabase(data);
                 _mutex.ReleaseMutex();
-                _fileManager.MoveFileToAnotherDirectory(_targetDirectoryPath, fileName);
-
-                // Debug code for Threads
-                Console.WriteLine($"{Thread.CurrentThread.ManagedThreadId} is end");
+                _fileManager.MoveFileToAnotherDirectory(_fileConfiguration.TargetDirectoryPath, fileName);
             }
             catch (Exception)
             {
@@ -189,7 +176,7 @@ namespace BL.ProcessManagers
             try
             {
                 using var fileParser = new FileParserFactory()
-                    .CreateInstance(_sourceDirectoryPath + fileName);
+                    .CreateInstance(_fileConfiguration.SourceDirectoryPath + fileName);
 
                 return fileParser.ReadFile();
             }
