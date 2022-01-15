@@ -1,6 +1,6 @@
 ﻿using System;
 using BL.SalesDataSourceDTOs;
-using DbWorks.Models;
+using DatabaseLayer.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 

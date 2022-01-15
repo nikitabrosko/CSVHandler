@@ -1,7 +1,7 @@
 ﻿using System;
 using BL.Abstractions;
 using BL.SalesDataSourceDTOs;
-using DbWorks.Models;
+using DatabaseLayer.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace BLTests.SalesDataSourceDTOsTests
