@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Data.Entity;
 using DAL.Abstractions;
 using DAL.Abstractions.Factories;
 using DAL.Abstractions.UnitOfWorks;
-using DbWorks.Models;
+using DatabaseLayer.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace DAL.UnitOfWorks
 {
@@ -15,6 +15,7 @@ namespace DAL.UnitOfWorks
         private IGenericRepository<Order> _orderRepository;
         private IGenericRepository<Product> _productRepository;
         private readonly IGenericRepositoryFactory _repositoryFactory;
+
         public bool IsDisposed { get; protected set; }
 
         public IGenericRepository<Customer> CustomerRepository =>
@@ -37,7 +38,7 @@ namespace DAL.UnitOfWorks
             _repositoryFactory = repositoryFactory;
         }
 
-        private void Verify(DbContext context, IGenericRepositoryFactory repositoryFactory)
+        private static void Verify(DbContext context, IGenericRepositoryFactory repositoryFactory)
         {
             if (context is null)
             {

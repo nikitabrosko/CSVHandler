@@ -1,21 +1,14 @@
-﻿using System;
-using System.Data.Common;
-using System.Data.Entity;
-using DAL.Abstractions.Factories;
-using DbWorks.Contexts;
+﻿using DAL.Abstractions.Factories;
+using DatabaseLayer.Contexts;
+using Microsoft.EntityFrameworkCore;
 
 namespace DAL.SalesDbContextFactories
 {
     public class SalesDbContextFactory : ISalesDbContextFactory
     {
-        public DbContext CreateInstance(DbConnection connection, bool ownConnection = true)
+        public DbContext CreateInstance(DbContextOptions<SalesDbContext> options)
         {
-            if (connection is null)
-            {
-                throw new ArgumentNullException(nameof(connection));
-            }
-
-            return new SalesDbContext(connection, ownConnection);
+            return new SalesDbContext(options);
         }
     }
 }

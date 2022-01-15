@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
 using System.Linq.Expressions;
 using DAL.Abstractions;
+using Microsoft.EntityFrameworkCore;
 
 namespace DAL.Repositories
 {
@@ -23,7 +23,7 @@ namespace DAL.Repositories
             _dbSet = Context.Set<TEntity>();
         }
 
-        private void Verify(DbContext dbContext)
+        private static void Verify(DbContext dbContext)
         {
             if (dbContext is null)
             {

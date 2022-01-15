@@ -1,7 +1,7 @@
-﻿using System.Data.Entity;
-using DAL.Abstractions;
+﻿using DAL.Abstractions;
 using DAL.Abstractions.Factories;
 using DAL.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace DAL.RepositoryFactories
 {

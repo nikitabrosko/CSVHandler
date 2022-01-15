@@ -1,4 +1,4 @@
-﻿using DbWorks.Models;
+﻿using DatabaseLayer.Models;
 
 namespace DAL.Abstractions.UnitOfWorks
 {

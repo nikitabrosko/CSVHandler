@@ -1,10 +1,10 @@
-﻿using System.Data.Common;
-using System.Data.Entity;
+﻿using DatabaseLayer.Contexts;
+using Microsoft.EntityFrameworkCore;
 
 namespace DAL.Abstractions.Factories
 {
     public interface ISalesDbContextFactory
     {
-        DbContext CreateInstance(DbConnection connection, bool ownConnection = true);
+        DbContext CreateInstance(DbContextOptions<SalesDbContext> options);
     }
 }
