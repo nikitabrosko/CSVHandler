@@ -1,1 +1,1 @@
-sc stop SalesInformationSecond
+sc stop SalesInfo
