@@ -1,1 +1,2 @@
-04012022;Matvey Vanyukevich;Monitor, 85;85
+OrderDate;CustomerFirstName CustomerLastName;ProductName, ProductPrice;OrderSum;
+04/01/2022;Matvey Vanyukevich;Monitor, 85;85;

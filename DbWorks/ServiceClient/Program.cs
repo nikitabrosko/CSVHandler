@@ -61,7 +61,6 @@ namespace ServiceClient
                     
                     var connectionString = config.GetSection("ConnectionStrings:Default").Value;
 
-
                     services.AddHostedService<Worker>();
                     services.AddSingleton<IProcessManager, ProcessManager>(serviceProvider =>
                     {
