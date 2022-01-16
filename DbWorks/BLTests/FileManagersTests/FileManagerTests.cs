@@ -26,6 +26,19 @@ namespace BLTests.FileManagersTests
                 .AddJsonFile(Path.GetFullPath(@"..\\..\\..\\FileManagersTests\\TestsSettings.json"))
                 .Build().GetSection("FilesExtensions:FilesExtensionForTests").Value;
 
+        private void CreateDirectoriesIfNotExists()
+        {
+            if (!Directory.Exists(_sourceDirectoryPath))
+            {
+                Directory.CreateDirectory(_sourceDirectoryPath);
+            }
+
+            if (!Directory.Exists(_targetDirectoryPath))
+            {
+                Directory.CreateDirectory(_targetDirectoryPath);
+            }
+        }
+
         [TestMethod]
         [DataRow("", "testPath")]
         [DataRow(" ", "testPath")]
@@ -43,6 +56,8 @@ namespace BLTests.FileManagersTests
         [TestMethod]
         public void FileManagerDisposeMethodTest()
         {
+            CreateDirectoriesIfNotExists();
+
             var fileManager = new FileManager(_sourceDirectoryPath, _fileExtension);
 
             fileManager.Dispose();
@@ -53,6 +68,8 @@ namespace BLTests.FileManagersTests
         [TestMethod]
         public void FileManagerMoveFileToAnotherDirectoryMethodTest()
         {
+            CreateDirectoriesIfNotExists();
+
             var fileName = "TestFirst_01012022.csv";
 
             if (!File.Exists(_sourceDirectoryPath + fileName))
@@ -72,6 +89,8 @@ namespace BLTests.FileManagersTests
         [TestMethod]
         public void FileManagerMoveFileToAnotherDirectoryMethodWithFileExistsTest()
         {
+            CreateDirectoriesIfNotExists();
+
             var fileName = "TestSecond_01012022.csv";
 
             if (!File.Exists(_sourceDirectoryPath + fileName))

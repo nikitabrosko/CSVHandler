@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using BL.Abstractions;
 using BL.DataSourceParsers.FileParsers;
 using BL.SalesDataSourceDTOs;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -22,18 +21,16 @@ namespace BLTests.DataSourceParsersTests.FileParsersTests
         public void FileParserParseFileMethodTest()
         {
             var fileParser = new FileParser(DataAccessForTests.PathToFolder + DataAccessForTests.FileName);
-
-            var fileContent = new FileContentDTO
-            {
-                CustomerFullName = "Ivan Sidorov",
-                OrderDate = DateTime.Parse("01/01/2022"),
-                OrderSum = "20",
-                ProductRecord = "Telephone, 5"
-            };
-
-            var expectedDataSourceDto = 
-                new SalesDataSourceHandler(fileContent, "Test")
-                .GetSalesDataSourceDTO();
+            
+            var expectedDataSourceDto =
+                new SalesDataSourceHandler
+                {
+                    CustomerFullName = "Ivan Sidorov",
+                    OrderDate = DateTime.Parse("01/01/2022"),
+                    OrderSum = "20",
+                    ProductRecord = "Telephone, 5",
+                    ManagerLastName = "Test"
+                }.GetSalesDataSourceDTO();
 
             var actualDataSourceDto = fileParser.ReadFile().First();
 

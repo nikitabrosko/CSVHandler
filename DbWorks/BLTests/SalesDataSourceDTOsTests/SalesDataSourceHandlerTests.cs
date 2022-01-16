@@ -1,5 +1,4 @@
 ﻿using System;
-using BL.Abstractions;
 using BL.SalesDataSourceDTOs;
 using DatabaseLayer.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -10,42 +9,18 @@ namespace BLTests.SalesDataSourceDTOsTests
     public class SalesDataSourceHandlerTests
     {
         [TestMethod]
-        [DataRow(null, "Test", "Test", "Test", "5", "01/01/2022", "20")]
-        [DataRow("Test", null, "Test", "Test", "5", "01/01/2022", "20")]
-        [DataRow("Test", "Test", null, "Test", "5", "01/01/2022", "20")]
-        [DataRow("Test", "Test", "Test", null, "5", "01/01/2022", "20")]
-        [DataRow("Test", "Test", "Test", "Test", null, "01/01/2022", "20")]
-        [DataRow("Test", "Test", "Test", "Test", "5", "01/01/2022", null)]
-        public void SalesDataSourceHandlerCreatingWithInvalidParametersCustomerFirstNameIsNullTest(string customerFirstName,
-            string customerLastName, string managerLastName, string productName, string productPrice, string orderDate, string orderSum)
-        {
-            var fileContent = new FileContentDTO
-            {
-                CustomerFullName = customerFirstName + " " + customerLastName,
-                OrderDate = DateTime.Parse(orderDate),
-                OrderSum = orderSum,
-                ProductRecord = productName + ", " + productPrice
-            };
-
-            Assert.ThrowsException<ArgumentException>(() => 
-                new SalesDataSourceHandler(fileContent, managerLastName), 
-                "argument is null, or empty, or whitespace");
-        }
-
-        [TestMethod]
-        [DataRow("Test", "Test", "Test", "Test", "5", "01.01.2022", "20")]
+        [DataRow("Test", "Test", "Test", "Test", "5", "01/01/2022", "20")]
         public void SalesDataSourceHandlerGetSalesDataSourceDtoMethodTest(string customerFirstName, string customerLastName, 
             string managerLastName, string productName, string productPrice, string orderDate, string orderSum)
         {
-            var fileContent = new FileContentDTO
+            var salesDataSourceHandler = new SalesDataSourceHandler
             {
                 CustomerFullName = customerFirstName + " " + customerLastName,
                 OrderDate = DateTime.Parse(orderDate),
                 OrderSum = orderSum,
-                ProductRecord = productName + ", " + productPrice
+                ProductRecord = productName + ", " + productPrice,
+                ManagerLastName = managerLastName
             };
-
-            var salesDataSourceHandler = new SalesDataSourceHandler(fileContent, managerLastName);
 
             var customer = new Customer
             {

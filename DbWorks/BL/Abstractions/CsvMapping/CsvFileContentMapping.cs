@@ -3,7 +3,7 @@ using TinyCsvParser.Mapping;
 
 namespace BL.Abstractions.CsvMapping
 {
-    public class CsvFileContentMapping : CsvMapping<FileContentDTO>
+    public class CsvFileContentMapping : CsvMapping<SalesDataSourceHandler>
     {
         public CsvFileContentMapping() 
             : base()

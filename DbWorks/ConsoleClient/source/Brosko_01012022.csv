@@ -1,2 +1,4 @@
 OrderDate;CustomerFirstName CustomerLastName;ProductName, ProductPrice;OrderSum;
 01/01/2022;Ivan Sidorov;Telephone, 5;20;
+01/01/2022;Andrey Anikin;Telephone, 5;5;
+01/01/2022;Korben Dallas;Telephone, 5;10;

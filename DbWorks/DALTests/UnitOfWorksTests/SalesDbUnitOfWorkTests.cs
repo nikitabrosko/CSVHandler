@@ -1,10 +1,6 @@
 using System;
 using DAL.Abstractions.Factories;
-using DAL.Repositories;
-using DAL.RepositoryFactories;
 using DAL.UnitOfWorks;
-using DatabaseLayer.Contexts;
-using DatabaseLayer.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;

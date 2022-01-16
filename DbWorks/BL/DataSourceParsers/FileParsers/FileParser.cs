@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using BL.Abstractions;
 using BL.Abstractions.CsvMapping;
-using BL.DataSourceParsers.FileParsersFactories;
 using BL.SalesDataSourceDTOs;
 using TinyCsvParser;
 
@@ -35,7 +32,7 @@ namespace BL.DataSourceParsers.FileParsers
         public IEnumerable<SalesDataSourceDTO> ReadFile()
         {
             var csvParserOptions = new CsvParserOptions(true, ';');
-            var csvReader = new CsvParser<FileContentDTO>(csvParserOptions, new CsvFileContentMapping());
+            var csvReader = new CsvParser<SalesDataSourceHandler>(csvParserOptions, new CsvFileContentMapping());
             var records = csvReader.ReadFromFile(_filePath, Encoding.UTF8);
 
             var managerLastName = new Regex("[A-Za-z]+")
@@ -43,8 +40,9 @@ namespace BL.DataSourceParsers.FileParsers
 
             foreach (var fileContentDto in records)
             {
-                yield return new SalesDataSourceHandler(fileContentDto.Result, managerLastName)
-                    .GetSalesDataSourceDTO();
+                fileContentDto.Result.ManagerLastName = managerLastName;
+
+                yield return fileContentDto.Result.GetSalesDataSourceDTO();
             }
         }
     }

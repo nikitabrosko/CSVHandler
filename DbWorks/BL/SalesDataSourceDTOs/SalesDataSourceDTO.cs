@@ -1,5 +1,4 @@
 ﻿using System;
-using BL.Abstractions;
 using DatabaseLayer.Models;
 
 namespace BL.SalesDataSourceDTOs

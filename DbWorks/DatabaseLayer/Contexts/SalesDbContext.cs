@@ -8,8 +8,6 @@ namespace DatabaseLayer.Contexts
         public SalesDbContext(DbContextOptions<SalesDbContext> options) 
             : base(options)
         {
-            Database.EnsureDeleted();
-
             Database.EnsureCreated();
         }
 

@@ -3,7 +3,6 @@ using DAL.SalesDbContextFactories;
 using DatabaseLayer.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
 
 namespace DALTests.FactoriesTests
 {
