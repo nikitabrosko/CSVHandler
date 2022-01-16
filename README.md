@@ -3,6 +3,8 @@ Before run any of application's you need to:
 2. Find file along the path: DbWorks - ServiceClient - appsettings.json and change ConnectionString and path's to files to your's;
 3. Build solution;
 
+You can use csv files which are located in CSV Files directory.
+
 Work with Console application:
 1. Add files to source folder;
 2. Run ConsoleClient application;
