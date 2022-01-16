@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using BL.Abstractions;
 using BL.DataSourceParsers.FileParsers;
 using BL.SalesDataSourceDTOs;
@@ -20,18 +21,26 @@ namespace BLTests.DataSourceParsersTests.FileParsersTests
         [TestMethod]
         public void FileParserParseFileMethodTest()
         {
-            using var fileParser = new FileParser(DataAccessForTests.PathToFolder + DataAccessForTests.FileName);
+            var fileParser = new FileParser(DataAccessForTests.PathToFolder + DataAccessForTests.FileName);
 
-            var expectedDataSourceDto = new SalesDataSourceHandler("Ivan", "Sidorov",
-                    "Test", "Telephone", "5", "01.01.2022", "20")
+            var fileContent = new FileContentDTO
+            {
+                CustomerFullName = "Ivan Sidorov",
+                OrderDate = DateTime.Parse("01/01/2022"),
+                OrderSum = "20",
+                ProductRecord = "Telephone, 5"
+            };
+
+            var expectedDataSourceDto = 
+                new SalesDataSourceHandler(fileContent, "Test")
                 .GetSalesDataSourceDTO();
 
-            var actualDataSourceDto = fileParser.ReadFile();
+            var actualDataSourceDto = fileParser.ReadFile().First();
 
             Assert.IsTrue(CheckTwoSalesDataSourcesDto(expectedDataSourceDto, actualDataSourceDto));
         }
 
-        private static bool CheckTwoSalesDataSourcesDto(ISalesDataSourceDTO firstDataSource, ISalesDataSourceDTO secondDataSource)
+        private static bool CheckTwoSalesDataSourcesDto(SalesDataSourceDTO firstDataSource, SalesDataSourceDTO secondDataSource)
         {
             var checkForCustomerEquals =
                 Equals(firstDataSource.Customer.FirstName, secondDataSource.Customer.FirstName)
