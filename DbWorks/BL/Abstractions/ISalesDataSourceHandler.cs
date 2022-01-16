@@ -1,4 +1,6 @@
-﻿namespace BL.Abstractions
+﻿using BL.SalesDataSourceDTOs;
+
+namespace BL.Abstractions
 {
     public interface ISalesDataSourceHandler
     {
@@ -9,6 +11,6 @@
         string ProductPrice { get; }
         string OrderDate { get; }
         string OrderSum { get; }
-        ISalesDataSourceDTO GetSalesDataSourceDTO();
+        SalesDataSourceDTO GetSalesDataSourceDTO();
     }
 }

@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
+using BL.SalesDataSourceDTOs;
 
 namespace BL.Abstractions
 {
-    public interface IFileParser : IDisposable
+    public interface IFileParser
     {
-        ISalesDataSourceDTO ReadFile();
+        IEnumerable<SalesDataSourceDTO> ReadFile();
     }
 }

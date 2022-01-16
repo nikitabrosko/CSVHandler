@@ -1,1 +1,2 @@
-03012022;Mark Graevskiy;Laptop, 1500;1500
+OrderDate;CustomerFirstName CustomerLastName;ProductName, ProductPrice;OrderSum;
+03/01/2022;Mark Graevskiy;Laptop, 1500;1500;

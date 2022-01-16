@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -7,6 +8,7 @@ using BL.Abstractions;
 using BL.Abstractions.ConfigurationOptions;
 using BL.DataSourceParsers.FileParsersFactories;
 using BL.FileManagers;
+using BL.SalesDataSourceDTOs;
 using DAL.Abstractions.UnitOfWorks;
 
 namespace BL.ProcessManagers
@@ -94,7 +96,12 @@ namespace BL.ProcessManagers
                 var data = ParseFile(fileName);
 
                 _mutex.WaitOne();
-                SaveDataToDatabase(data);
+
+                foreach (var salesData in data)
+                {
+                    SaveDataToDatabase(salesData);
+                }
+
                 _mutex.ReleaseMutex();
                 _fileManager.MoveFileToAnotherDirectory(_fileConfiguration.TargetDirectoryPath, fileName);
             }
@@ -117,7 +124,7 @@ namespace BL.ProcessManagers
             new Task(() => SaveDataAndMoveFile(fileName)).Start();
         }
 
-        private void SaveDataToDatabase(ISalesDataSourceDTO dataToSave)
+        private void SaveDataToDatabase(SalesDataSourceDTO dataToSave)
         {
             CustomerCheckAndInsert();
             ManagerCheckAndInsert();
@@ -171,11 +178,11 @@ namespace BL.ProcessManagers
             }
         }
 
-        private ISalesDataSourceDTO ParseFile(string fileName)
+        private IEnumerable<SalesDataSourceDTO> ParseFile(string fileName)
         {
             try
             {
-                using var fileParser = new FileParserFactory()
+                var fileParser = new FileParserFactory()
                     .CreateInstance(_fileConfiguration.SourceDirectoryPath + fileName);
 
                 return fileParser.ReadFile();

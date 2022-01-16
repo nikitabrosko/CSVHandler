@@ -1,23 +1,27 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
 using BL.Abstractions;
+using BL.Abstractions.CsvMapping;
 using BL.DataSourceParsers.FileParsersFactories;
 using BL.SalesDataSourceDTOs;
+using TinyCsvParser;
 
 namespace BL.DataSourceParsers.FileParsers
 {
     public class FileParser : IFileParser
     {
         private readonly string _filePath;
-        private readonly TextReader _reader;
 
         public FileParser(string fullPath)
         {
             Verify(fullPath);
 
             _filePath = fullPath;
-            _reader = new StreamReader(fullPath);
         }
 
         private static void Verify(string fullPath)
@@ -28,26 +32,20 @@ namespace BL.DataSourceParsers.FileParsers
             }
         }
 
-        public ISalesDataSourceDTO ReadFile()
+        public IEnumerable<SalesDataSourceDTO> ReadFile()
         {
-            var fileNameParser = new FileNameParserFactory()
-                .CreateInstance(_filePath.Split("\\").Last());
-            var fileContentParser = new FileContentParserFactory()
-                .CreateInstance(_reader.ReadToEnd());
-            var customerInfo = fileContentParser.ReadCustomerRecord();
-            var productInfo = fileContentParser.ReadProductRecord();
+            var csvParserOptions = new CsvParserOptions(true, ';');
+            var csvReader = new CsvParser<FileContentDTO>(csvParserOptions, new CsvFileContentMapping());
+            var records = csvReader.ReadFromFile(_filePath, Encoding.UTF8);
 
-            return new SalesDataSourceHandler(customerInfo[0], customerInfo[1],
-                fileNameParser.GetLastName(), productInfo[0], productInfo[1],
-                    fileContentParser.ReadDateRecord(), fileContentParser.ReadSumRecord())
-                .GetSalesDataSourceDTO();
-        }
+            var managerLastName = new Regex("[A-Za-z]+")
+                .Match(Path.GetFileName(_filePath)).Value;
 
-        public void Dispose()
-        {
-            _reader.Close();
-            _reader.Dispose();
-            GC.SuppressFinalize(this);
+            foreach (var fileContentDto in records)
+            {
+                yield return new SalesDataSourceHandler(fileContentDto.Result, managerLastName)
+                    .GetSalesDataSourceDTO();
+            }
         }
     }
 }

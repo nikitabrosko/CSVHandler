@@ -11,18 +11,6 @@ namespace DALTests.FactoriesTests
     public class SalesDbContextFactoryTests
     {
         [TestMethod]
-        public void TestSalesDbContextFactoryClassReturningElement()
-        {
-            var contextOptions = new Mock<DbContextOptions<SalesDbContext>>().Object;
-            var salesDbContextFactory = new SalesDbContextFactory();
-
-            var expectedSalesDbContext = new SalesDbContext(contextOptions);
-            var actualSalesDbContext = salesDbContextFactory.CreateInstance(contextOptions);
-
-            Assert.AreEqual(actualSalesDbContext.GetType(), expectedSalesDbContext.GetType());
-        }
-
-        [TestMethod]
         public void TestSalesDbContextFactoryClassReturningElementDbConnectionIsNull()
         {
             DbContextOptions<SalesDbContext> contextOptions = null;

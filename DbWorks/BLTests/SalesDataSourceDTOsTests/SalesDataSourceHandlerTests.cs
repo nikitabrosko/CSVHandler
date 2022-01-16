@@ -10,19 +10,26 @@ namespace BLTests.SalesDataSourceDTOsTests
     public class SalesDataSourceHandlerTests
     {
         [TestMethod]
-        [DataRow(null, "Test", "Test", "Test", "5", "01012022", "20")]
-        [DataRow("Test", null, "Test", "Test", "5", "01012022", "20")]
-        [DataRow("Test", "Test", null, "Test", "5", "01012022", "20")]
-        [DataRow("Test", "Test", "Test", null, "5", "01012022", "20")]
-        [DataRow("Test", "Test", "Test", "Test", null, "01012022", "20")]
-        [DataRow("Test", "Test", "Test", "Test", "5", null, "20")]
-        [DataRow("Test", "Test", "Test", "Test", "5", "01012022", null)]
+        [DataRow(null, "Test", "Test", "Test", "5", "01/01/2022", "20")]
+        [DataRow("Test", null, "Test", "Test", "5", "01/01/2022", "20")]
+        [DataRow("Test", "Test", null, "Test", "5", "01/01/2022", "20")]
+        [DataRow("Test", "Test", "Test", null, "5", "01/01/2022", "20")]
+        [DataRow("Test", "Test", "Test", "Test", null, "01/01/2022", "20")]
+        [DataRow("Test", "Test", "Test", "Test", "5", "01/01/2022", null)]
         public void SalesDataSourceHandlerCreatingWithInvalidParametersCustomerFirstNameIsNullTest(string customerFirstName,
             string customerLastName, string managerLastName, string productName, string productPrice, string orderDate, string orderSum)
         {
-            Assert.ThrowsException<ArgumentNullException>(() =>
-                new SalesDataSourceHandler(customerFirstName, customerLastName, managerLastName, 
-                    productName, productPrice, orderDate, orderSum));
+            var fileContent = new FileContentDTO
+            {
+                CustomerFullName = customerFirstName + " " + customerLastName,
+                OrderDate = DateTime.Parse(orderDate),
+                OrderSum = orderSum,
+                ProductRecord = productName + ", " + productPrice
+            };
+
+            Assert.ThrowsException<ArgumentException>(() => 
+                new SalesDataSourceHandler(fileContent, managerLastName), 
+                "argument is null, or empty, or whitespace");
         }
 
         [TestMethod]
@@ -30,8 +37,15 @@ namespace BLTests.SalesDataSourceDTOsTests
         public void SalesDataSourceHandlerGetSalesDataSourceDtoMethodTest(string customerFirstName, string customerLastName, 
             string managerLastName, string productName, string productPrice, string orderDate, string orderSum)
         {
-            var salesDataSourceHandler = new SalesDataSourceHandler(customerFirstName, customerLastName, 
-                managerLastName, productName, productPrice, orderDate, orderSum);
+            var fileContent = new FileContentDTO
+            {
+                CustomerFullName = customerFirstName + " " + customerLastName,
+                OrderDate = DateTime.Parse(orderDate),
+                OrderSum = orderSum,
+                ProductRecord = productName + ", " + productPrice
+            };
+
+            var salesDataSourceHandler = new SalesDataSourceHandler(fileContent, managerLastName);
 
             var customer = new Customer
             {
@@ -67,7 +81,7 @@ namespace BLTests.SalesDataSourceDTOsTests
             Assert.IsTrue(CheckTwoSalesDataSourcesDto(expectedDataSourceDto, actualDataSourceDto));
         }
 
-        private static bool CheckTwoSalesDataSourcesDto(ISalesDataSourceDTO firstDataSource, ISalesDataSourceDTO secondDataSource)
+        private static bool CheckTwoSalesDataSourcesDto(SalesDataSourceDTO firstDataSource, SalesDataSourceDTO secondDataSource)
         {
             var checkForCustomerEquals =
                 Equals(firstDataSource.Customer.FirstName, secondDataSource.Customer.FirstName)
