@@ -1,1 +1,1 @@
-sc delete SalesInformationSecond
+sc delete SalesInfo
