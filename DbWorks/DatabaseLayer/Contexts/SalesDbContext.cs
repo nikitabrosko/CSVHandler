@@ -20,7 +20,7 @@ namespace DatabaseLayer.Contexts
             modelBuilder.Entity<Customer>()
                 .Property(c => c.LastName).IsRequired().HasMaxLength(30);
             modelBuilder.Entity<Customer>()
-                .Property(c => c.FullName).HasComputedColumnSql("[LastName] + ', ' + [FirstName]");
+                .Property(c => c.FullName).HasComputedColumnSql("[LastName] + ' ' + [FirstName]");
             modelBuilder.Entity<Customer>()
                 .HasMany(c => c.Orders).WithOne(o => o.Customer);
 
