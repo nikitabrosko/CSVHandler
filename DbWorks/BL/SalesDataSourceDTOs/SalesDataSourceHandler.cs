@@ -1,51 +1,29 @@
 ﻿using System;
-using BL.Abstractions;
 using DatabaseLayer.Models;
 
 namespace BL.SalesDataSourceDTOs
 {
-    public class SalesDataSourceHandler : ISalesDataSourceHandler
+    public class SalesDataSourceHandler
     {
-        public string CustomerFirstName { get; }
-
-        public string CustomerLastName { get; }
+        public FileContentDTO FileContent { get; }
 
         public string ManagerLastName { get; }
 
-        public string ProductName { get; }
-
-        public string ProductPrice { get; }
-
-        public string OrderDate { get; }
-
-        public string OrderSum { get; }
-
-        public SalesDataSourceHandler(string customerFirstName,
-            string customerLastName,
-            string managerLastName,
-            string productName,
-            string productPrice,
-            string orderDate,
-            string orderSum)
+        public SalesDataSourceHandler(FileContentDTO fileContent, string managerLastName)
         {
-            Verify(customerFirstName, customerLastName, managerLastName,
-                productName, productPrice, orderDate, orderSum);
+            Verify(fileContent, managerLastName);
 
-            CustomerFirstName = customerFirstName;
-            CustomerLastName = customerLastName;
+            FileContent = fileContent;
             ManagerLastName = managerLastName;
-            ProductName = productName;
-            ProductPrice = productPrice;
-            OrderDate = orderDate;
-            OrderSum = orderSum;
         }
 
-        public ISalesDataSourceDTO GetSalesDataSourceDTO()
+        public SalesDataSourceDTO GetSalesDataSourceDTO()
         {
+            
             var customer = new Customer
             {
-                FirstName = CustomerFirstName,
-                LastName = CustomerLastName
+                FirstName = FileContent.CustomerFullName.Split(' ')[0],
+                LastName = FileContent.CustomerFullName.Split(' ')[1]
             };
 
             var manager = new Manager
@@ -55,14 +33,14 @@ namespace BL.SalesDataSourceDTOs
 
             var product = new Product
             {
-                Name = ProductName,
-                Price = decimal.Parse(ProductPrice)
+                Name = FileContent.ProductRecord.Split(", ")[0],
+                Price = decimal.Parse(FileContent.ProductRecord.Split(", ")[1])
             };
 
             var order = new Order
             {
-                Date = DateTime.Parse(OrderDate),
-                Sum = decimal.Parse(OrderSum),
+                Date = FileContent.OrderDate,
+                Sum = decimal.Parse(FileContent.OrderSum),
                 Customer = customer,
                 Manager = manager,
                 Product = product
@@ -71,47 +49,40 @@ namespace BL.SalesDataSourceDTOs
             return new SalesDataSourceDTO(customer, manager, order, product);
         }
 
-        private static void Verify(string customerFirstName,
-            string customerLastName,
-            string managerLastName,
-            string productName,
-            string productPrice,
-            string orderDate,
-            string orderSum)
+        private static void Verify(FileContentDTO fileContent,
+            string managerLastName)
         {
-            if (customerFirstName is null)
+            var customerFullNameSplit = fileContent.CustomerFullName.Split(' ');
+            var productRecordSplit = fileContent.ProductRecord.Split(", ");
+
+            if (string.IsNullOrWhiteSpace(customerFullNameSplit[0]))
             {
-                throw new ArgumentNullException(nameof(customerFirstName));
+                throw new ArgumentException("argument is null, or empty, or whitespace", nameof(fileContent));
             }
 
-            if (customerLastName is null)
+            if (string.IsNullOrWhiteSpace(customerFullNameSplit[1]))
             {
-                throw new ArgumentNullException(nameof(customerLastName));
+                throw new ArgumentException("argument is null, or empty, or whitespace", nameof(fileContent));
             }
 
-            if (managerLastName is null)
+            if (string.IsNullOrWhiteSpace(managerLastName))
             {
-                throw new ArgumentNullException(nameof(managerLastName));
+                throw new ArgumentException("argument is null, or empty, or whitespace", nameof(fileContent));
             }
 
-            if (productName is null)
+            if (string.IsNullOrWhiteSpace(productRecordSplit[0]))
             {
-                throw new ArgumentNullException(nameof(productName));
+                throw new ArgumentException("argument is null, or empty, or whitespace", nameof(fileContent));
             }
 
-            if (productPrice is null)
+            if (string.IsNullOrWhiteSpace(productRecordSplit[1]))
             {
-                throw new ArgumentNullException(nameof(productPrice));
+                throw new ArgumentException("argument is null, or empty, or whitespace", nameof(fileContent));
             }
 
-            if (orderDate is null)
+            if (string.IsNullOrWhiteSpace(fileContent.OrderSum))
             {
-                throw new ArgumentNullException(nameof(orderDate));
-            }
-
-            if (orderSum is null)
-            {
-                throw new ArgumentNullException(nameof(orderSum));
+                throw new ArgumentException("argument is null, or empty, or whitespace", nameof(fileContent));
             }
         }
     }

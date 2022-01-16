@@ -4,7 +4,7 @@ using DatabaseLayer.Models;
 
 namespace BL.SalesDataSourceDTOs
 {
-    public class SalesDataSourceDTO : ISalesDataSourceDTO
+    public class SalesDataSourceDTO
     {
         public Customer Customer { get; }
 
